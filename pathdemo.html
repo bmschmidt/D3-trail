@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Path demonstration</title>
+<script src="/maury/d3.v3.min.js"></script>
+</head>
+
+<body>
+
+<script src="pathlayout.js"></script>
+<h1>D3 path demonstrations</h1>
+
+
+<hr>
+
+<svg width=500 height=500 id=main><>
+
+
+<script>
+
+//build some random data
+
+var data = [{"x":0,"y":0,"i":0}]
+
+d3.range(1000).forEach(function(i) {
+data.push(
+{"i":i+1,
+"x":data[data.length-1]["x"]+Math.random()-.5,
+"y":data[data.length-1]["y"]+Math.random()-.5})
+})
+
+
+//Build x and y scales appropriate to it.
+x =
+d3.scale.linear().range([0,500]).domain(d3.extent(data.map(function(d) 
+{return d.x}))) 
+y = d3.scale.linear().range([0,500]).domain(d3.extent(data.map(function(d) 
+{return d.y})))
+
+
+layout = d3.layout.trail() 
+
+layout = layout 
+    .positioner(function(d) {return [x(d['x']),y(d['y'])]}) 
+    .coordType("xy")
+.sort(function(a,b) {return a.i-b.i})
+
+var out =
+layout.data(data)
+.layout()
+
+
+
+var line = d3.select("#main").selectAll("line").data(out)
+
+line
+.enter()
+.append("line")
+.style("stroke-width",3)
+.style("stroke","black") 
+.transition() 
+.delay(function(d,i) {return i*100})
+.attr("x0",function(d) {return
+d['x0']})
+.attr("x1",function(d) {return d.x1}) 
+.attr("y1",function(d) 
+{return d.y1}) 
+.attr("y2",function(d) {return d.y2}) 
+.attr("x2",function(d) {return d.x2})
+.style("opacity",.5)
+.transition()
+.duration(5000)
+.style("opacity",0)
+.remove()
+
+</script>
+
+<address></address>
+<!-- hhmts start -->Last modified: Wed Jun 18 15:15:40 EDT 2014 <!-- hhmts end -->
+</body> </html>

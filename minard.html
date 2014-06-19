@@ -1,0 +1,296 @@
+    <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+    <html> <head>
+    <title>Minard map in D3</title>
+    <script src="/maury/d3.v3.min.js"></script>
+    </head>
+    <style>
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
+    }
+
+    text {
+        font-family: sans-serif;
+        font-size: 13px;
+    }
+body
+{
+background: #FFFFFA; 
+}
+
+
+</style>
+    <body>
+    <script src="pathlayout.js"></script>
+
+    <script>
+    //The data, from http://mbostock.github.io/protovis/ex/napoleon.html
+
+var napoleon = {};
+
+napoleon.cities =
+    [{"lon": 24.0 ,"lat":55.0 ,"name":"Kowno" },
+     {"lon": 25.3 ,"lat":54.7 ,"name":"Wilna" },
+     {"lon": 26.4 ,"lat":54.4 ,"name":"Smorgoni" },
+     {"lon": 26.8 ,"lat":54.3 ,"name":"Molodexno" },
+     {"lon": 27.7 ,"lat":55.2 ,"name":"Gloubokoe"},
+     {"lon": 27.6 ,"lat":53.9 ,"name":"Minsk"},
+     {"lon": 28.5 ,"lat":54.3 ,"name":"Studienska"},
+     {"lon": 28.7 ,"lat":55.5 ,"name":"Polotzk"},
+     {"lon": 29.2 ,"lat":54.4 ,"name":"Bobr"},
+     {"lon": 30.2 ,"lat":55.3 ,"name":"Witebsk"},
+     {"lon": 30.4 ,"lat":54.5 ,"name":"Orscha"},
+     {"lon": 30.4 ,"lat":53.9 ,"name":"Mohilow"},
+     {"lon": 32.0 ,"lat":54.8 ,"name":"Smolensk"},
+     {"lon": 33.2 ,"lat":54.9 ,"name":"Dorogobouge"},
+     {"lon": 34.3 ,"lat":55.2 ,"name":"Wixma"},
+     {"lon": 34.4 ,"lat":55.5 ,"name":"Chjat"},
+     {"lon": 36.0 ,"lat":55.5 ,"name":"Mojaisk"},
+     {"lon": 37.6 ,"lat":55.8 ,"name":"Moscou"},
+     {"lon": 36.6 ,"lat":55.3 ,"name":"Tarantino"},
+     {"lon": 36.5 ,"lat":55.0 ,"name":"Malo-jarosewli"}
+    ]
+
+napoleon.temp = [
+    {lon:37.6, temp:0,   date:"18 Oct 1812"},
+    {lon:36.0, temp:0,   date:"24 Oct 1812"},
+    {lon:33.2, temp:-9,  date:"09 Nov 1812"},
+    {lon:32.0, temp:-21, date:"14 Nov 1812"},
+    {lon:29.2, temp:-11, date:"24 Nov 1812"},
+    {lon:28.5, temp:-20, date:"28 Nov 1812"},
+    {lon:27.2, temp:-24, date:"01 Dec 1812"},
+    {lon:26.7, temp:-30, date:"06 Dec 1812"},
+    {lon:25.3, temp:-26, date:"07 Dec 1812"}
+];
+
+napoleon.army = [
+    /* Group 1 */
+    {lon:24.0,  lat:54.9,  size:340000, dir:1,  group:1},
+    {lon:24.5,  lat:55.0,  size:340000, dir:1,  group:1},
+    {lon:25.5,  lat:54.6,  size:340000, dir:1,  group:1},
+    {lon:26.0,  lat:54.7,  size:320000, dir:1,  group:1},
+    {lon:27.0,  lat:54.8,  size:300000, dir:1,  group:1},
+    {lon:28.0,  lat:54.9,  size:280000, dir:1,  group:1},
+    {lon:28.5,  lat:55.0,  size:240000, dir:1,  group:1},
+    {lon:29.0,  lat:55.1,  size:210000, dir:1,  group:1},
+    {lon:30.0,  lat:55.2,  size:180000, dir:1,  group:1},
+    {lon:30.3,  lat:55.3,  size:175000, dir:1,  group:1},
+    {lon:32.0,  lat:54.8,  size:145000, dir:1,  group:1},
+    {lon:33.2,  lat:54.9,  size:140000, dir:1,  group:1},
+    {lon:34.4,  lat:55.5,  size:127100, dir:1,  group:1},
+    {lon:35.5,  lat:55.4,  size:100000, dir:1,  group:1},
+    {lon:36.0,  lat:55.5,  size:100000, dir:1,  group:1},
+    {lon:37.6,  lat:55.8,  size:100000, dir:1,  group:1},
+    {lon:37.65, lat:55.65, size:100000, dir:-1, group:1},
+    {lon:37.45, lat:55.62, size:98000,  dir:-1, group:1},
+    {lon:37.0,  lat:55.0,  size:97000,  dir:-1, group:1},
+    {lon:36.8,  lat:55.0,  size:96000,  dir:-1, group:1},
+    {lon:35.4,  lat:55.3,  size:87000,  dir:-1, group:1},
+    {lon:34.3,  lat:55.2,  size:55000,  dir:-1, group:1},
+    {lon:33.3,  lat:54.8,  size:37000,  dir:-1, group:1},
+    {lon:32.0,  lat:54.6,  size:24000,  dir:-1, group:1},
+    {lon:30.4,  lat:54.4,  size:20000,  dir:-1, group:1},
+    {lon:29.2,  lat:54.3,  size:20000,  dir:-1, group:1},
+    {lon:29.13, lat:54.29, size:50000,  dir:-1, group:1}, /* joined by group 2 */
+    {lon:28.5,  lat:54.2,  size:50000,  dir:-1, group:1},
+    {lon:28.3,  lat:54.3,  size:48000,  dir:-1, group:1},
+    {lon:26.8,  lat:54.3,  size:12000,  dir:-1, group:1},
+    {lon:26.8,  lat:54.4,  size:14000,  dir:-1, group:1},
+    {lon:25.0,  lat:54.4,  size:8000,   dir:-1, group:1},
+    {lon:24.4,  lat:54.4,  size:4000,   dir:-1, group:1},
+    {lon:24.2,  lat:54.4,  size:4000,   dir:-1, group:1},
+    {lon:24.1,  lat:54.4,  size:4000,   dir:-1, group:1},
+    /* Group 2 */
+    {lon:24.0,  lat:55.1,  size:60000,  dir:1,  group:2},
+    {lon:24.5,  lat:55.2,  size:60000,  dir:1,  group:2},
+    {lon:25.5,  lat:54.7,  size:60000,  dir:1,  group:2},
+    {lon:26.6,  lat:55.7,  size:40000,  dir:1,  group:2},
+    {lon:27.4,  lat:55.6,  size:33000,  dir:1,  group:2},
+    {lon:28.7,  lat:55.5,  size:33000,  dir:1,  group:2},
+    {lon:28.7,  lat:55.5,  size:33000,  dir:-1, group:2},
+    {lon:29.2,  lat:54.29, size:30000,  dir:-1, group:2},
+    /* Group 3 */
+    {lon:24.0,  lat:55.2,  size:22000,  dir:1,  group:3},
+    {lon:24.5,  lat:55.3,  size:22000,  dir:1,  group:3},
+    {lon:24.6,  lat:55.8,  size:6000,   dir:1,  group:3},
+    {lon:24.6,  lat:55.8,  size:6000,   dir:-1, group:3},
+    {lon:24.2,  lat:54.4,  size:6000,   dir:-1, group:3},
+    {lon:24.1,  lat:54.4,  size:6000,   dir:-1, group:3}
+];
+</script>
+
+
+    <h1>The Minard map in D3: a trail layout demonstration</h1>
+    <div>This is a demo of how my <a href="http://github.com/bmschmidt/D3trail">D3 trail layout</a> can reproduce
+    <a href=http://en.wikipedia.org/wiki/Charles_Joseph_Minard>Minard's map of the retreat of Napoleon's army from Russia</a>.
+    <p>
+    The "grouping" elements are being used here to draw several different paths (by color) simultaneously, and alter their width by the size of Napoleon's army. (From a maximum of 340,000 to an end value of 4,000.) Cities are overlaid on that.
+
+    <p>All the animation and timing is being done by D3's internal transitions. That also means that unlike Minard, we need not use color to show direction: here the different branches of the army each have their own color.
+
+</div>
+
+
+    <script>
+    var  width=1200,height=600;
+
+d3.select("body").append("svg").attr('width',width).attr('height',height).attr('id','minard')
+
+proj = d3.geo.mercator().translate([width/2,height*(1/5)]).center([31,55]).scale(4000)
+
+layout = d3.layout.trail()
+    .positioner(function(d) {return proj([d.lon,d.lat])})
+
+data = layout
+    .grouping(function(d) {return d.group})
+    .data(napoleon.army)
+    .coordType("xy")
+    .layout()
+
+
+//napoleon.army.map(function(d) {console.log( d.size,d.group)})
+
+widthScale =
+    d3.scale.linear().domain([0,340000]).range([1,37])
+
+var lines = d3.select("#minard").selectAll("line").data(data)
+
+color = d3.scale.category10().domain([1,2,3])
+
+
+var time = 7500; //Time to get to Moscow
+longs = d3.extent(napoleon.army.map(function(d) {return d.x2}))
+negTime = d3.scale.linear().domain(longs).range([0,time])
+posTime = d3.scale.linear().domain(longs).range([time,0])
+
+//Define a scale that returns right to left or left to right in time depending on the directionality. Well, not a scale, strictly, since it can't be inverted and so on: but a function that sits on top of scales.
+timeScale = function(d,element) {
+    out = d.dir==-1? time : 0;
+    lag = d.dir==-1 ? posTime(d[element]) : negTime(d[element]);
+    return out+lag
+}
+
+napoleon.cities = napoleon.cities.map(function(d) {
+    var point = proj([d.lon,d.lat])
+    console.log(point)
+    d.x = point[0]
+    d.y = point[1]
+    return d
+})
+
+var cities = d3
+    .select("#minard")
+    .selectAll("g")
+    .data(napoleon.cities)
+
+
+lines.enter().append("line")
+    .attr("x1",function(d) {return d.x1})
+    .attr("y1",function(d) {return d.y1})
+    .attr("y2",function(d) {return d.y1})
+    .attr("x2",function(d) {return d.x1})
+    .style("stroke-width",function(d) {return widthScale(d.size)})
+    .style("stroke",function(d) {return color(d.group)})
+    .style("opacity",1)
+    .transition()
+    .ease("linear")//keeps the transition pointed in the right direction
+    .duration(function(d) {return Math.abs(timeScale(d,'x2') - timeScale(d,'x1'))})
+    .delay(function(d) { return d3.min([timeScale(d,'x1'),timeScale(d,'x2')]) })
+    .attr("y2",function(d) {return d.y2})
+    .attr("x2",function(d) {return d.x2})
+    .style("stroke-linecap","round")
+
+
+cities = cities.enter().append("g")
+    .attr("transform",function(d) { return "translate(" + d.x + "," + d.y + ")" })
+
+
+circles = cities.append("circle").attr('r',3).style("fill","black").style("opacity",0).transition().delay(function(d) {return timeScale(d,'x')}).duration(1000).style("opacity",1)
+
+labels = cities.append("text").text(function(d) {return d.name})
+    .style("fill","black").attr("transform","translate(5,5)").style("opacity",0).transition()
+    .delay(function(d) {return timeScale(d,'x')-150}).duration(1000).style("opacity",1)
+
+
+
+temps = d3.select("#minard").append("g").attr("transform","translate(0,300)")
+
+
+tempScale = d3.scale.linear().domain([1,-36]).range([0,200])
+
+
+yaxis = d3.svg.axis().orient("right").scale(tempScale)
+
+temps.append("g")
+    .attr("transform","translate(" + proj([38,55])[0] + "0)").attr("class","y axis").style("opacity",0)
+    .call(yaxis)
+    .transition()
+    .delay(time)
+    .style("opacity",1)
+
+temps
+    .append("text")
+    .style("font-size",100)
+    .style("opacity",0)
+    .attr("transform","translate(135,100)")
+    .transition()
+    .delay(time)
+    .duration(1500)
+    .text("Temperature (f)")
+    .style("opacity",.15)
+
+
+
+
+tmpLayout = d3.layout.trail()
+    .positioner(function(d) {return [proj([d.lon,55])[0],tempScale(d.temp)]})
+
+tmpData = tmpLayout
+    .grouping(function() {return 1})
+    .data(napoleon.temp)
+    .coordType("xy")
+    .layout()
+
+tmpData = tmpData.map(function(d) {d.dir = -1; return d})
+
+tlines = temps.selectAll("line.temperature").data(tmpData)
+
+tlines
+    .enter()
+    .append("line")
+    .attr("class","temperature")
+    .attr("x1",function(d) {return d.x1})
+    .attr("y1",function(d) {return d.y1})
+    .attr("y2",function(d) {return d.y1})
+    .attr("x2",function(d) {return d.x1})
+    .style("stroke-width",4)
+    .style("stroke","red")
+    .style("opacity",1)
+    .transition()
+    .ease("linear")
+    .duration(function(d) {return Math.abs(timeScale(d,'x2') - timeScale(d,'x1'))})
+    .delay(function(d) { return d3.min([timeScale(d,'x1'),timeScale(d,'x2')]) })
+    .attr("y2",function(d) {return d.y2})
+    .attr("x2",function(d) {return d.x2})
+    .style("stroke-linecap","round")
+
+
+
+
+
+
+
+
+</script>
+
+    <hr>
+    <address></address>
+    <!-- hhmts start -->Last modified: Wed Jun 18 17:20:28 EDT 2014 <!-- hhmts end -->
+    </body> </html>
