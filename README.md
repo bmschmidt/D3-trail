@@ -13,6 +13,16 @@ For a classical example, see how variable-width, staggered entry lines [make it 
 
 For a more straightforward demo of staggered entry ([see this demo of a random walk](http://benschmidt.org/D3-trail/pathdemo.html)).
 
+
+Features include:
+
+1. Controls to define multiple groups of simultaneous lines by setting `grouping`.
+2. Options to return data either with `x1`,`x2`,`y1`, and `y2` elements to use with svg lines *or* with a `coordinates` object to use with geoprojections by setting `coordType`.
+3. Inbuilt methods to easily define `opacity` in the data as an evaporating trail in time like the frames in [my maps of shipping routes](http://sappingattention.blogspot.com/2012/04/visualizing-ocean-shipping.html).
+4. Control over sorting.
+5. Access to both points in the bound data, so that appearance of a segment can be defined by data about the destination point, the origin, or some interaction of them.
+
+
 Usage
 =====
 
@@ -36,15 +46,6 @@ paths.enter()
 .attr("x2",function(d) {return d.x2}) 
 
 ```
-
-Features include:
-
-1. Controls to define multiple groups of simultaneous lines by setting `grouping`.
-2. Options to return data either with `x1`,`x2`,`y1`, and `y2` elements to use with svg lines *or* with a `coordinates` object to use with geoprojections by setting `coordType`.
-3. Inbuilt methods to easily define `opacity` in the data as an evaporating trail in time like the frames in [my maps of shipping routes](http://sappingattention.blogspot.com/2012/04/visualizing-ocean-shipping.html).
-4. Control over sorting.
-5. Access to both points in the bound data, so that appearance of a segment can be defined by data about the destination point, the origin, or some interaction of them.
-
 
 API
 ===
