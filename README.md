@@ -1,12 +1,21 @@
 D3 Trail layout
 ================
 
-
 This is a layout function for creating paths in D3 where (unlike the native d3.svg.line() element) you need to apply specific geometries to each element of the line.
 
-This makes it possible to do things like staggered entry ([for instance, in a random walk](http://benschmidt.org/D3trail/pathdemo.html)); or lines of variable width ([for instance, in this reproduction of the line part of Minard's famous Napoleon map](http://benschmidt.org/minard.html).
+
+Demos
+======
 
 
+For a classical example, see how variable-width, staggered entry lines [make it possible to reproduce Minard's famous Napoleon map](http://benschmidt.org/D3-trail/minard.html).
+
+For a more straightforward demo of staggered entry ([see this demo of a random walk](http://benschmidt.org/D3-trail/pathdemo.html)).
+
+Coming soon, shipping animation charts showing this combined with a ticker.
+
+Usage
+=====
 
 You instantiate it by calling the function: once parameters are set, run the `layout()` method to get values back.
 
