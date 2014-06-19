@@ -1,7 +1,7 @@
     <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
     <html> <head>
     <title>Minard map in D3</title>
-    <script src="/maury/d3.v3.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     </head>
     <style>
     .axis path,
@@ -33,29 +33,31 @@ background: #FFFFFA;
     <script>
     //The data, from http://mbostock.github.io/protovis/ex/napoleon.html
 
+
+//unchanged except for adding the cities with directions as an element.
 var napoleon = {};
 
 napoleon.cities =
     [{"lon": 24.0 ,"lat":55.0 ,"name":"Kowno" },
      {"lon": 25.3 ,"lat":54.7 ,"name":"Wilna" },
-     {"lon": 26.4 ,"lat":54.4 ,"name":"Smorgoni" },
-     {"lon": 26.8 ,"lat":54.3 ,"name":"Molodexno" },
+     {"lon": 26.4 ,"lat":54.4 ,"name":"Smorgoni",dir:-1},
+     {"lon": 26.8 ,"lat":54.3 ,"name":"Molodexno",dir:-1},
      {"lon": 27.7 ,"lat":55.2 ,"name":"Gloubokoe"},
-     {"lon": 27.6 ,"lat":53.9 ,"name":"Minsk"},
-     {"lon": 28.5 ,"lat":54.3 ,"name":"Studienska"},
+     {"lon": 27.6 ,"lat":53.9 ,"name":"Minsk",dir:-1},
+     {"lon": 28.5 ,"lat":54.3 ,"name":"Studienska",dir:-1},
      {"lon": 28.7 ,"lat":55.5 ,"name":"Polotzk"},
-     {"lon": 29.2 ,"lat":54.4 ,"name":"Bobr"},
+     {"lon": 29.2 ,"lat":54.4 ,"name":"Bobr",dir:-1},
      {"lon": 30.2 ,"lat":55.3 ,"name":"Witebsk"},
-     {"lon": 30.4 ,"lat":54.5 ,"name":"Orscha"},
-     {"lon": 30.4 ,"lat":53.9 ,"name":"Mohilow"},
+     {"lon": 30.4 ,"lat":54.5 ,"name":"Orscha",dir:-1},
+     {"lon": 30.4 ,"lat":53.9 ,"name":"Mohilow",dir:-1},
      {"lon": 32.0 ,"lat":54.8 ,"name":"Smolensk"},
      {"lon": 33.2 ,"lat":54.9 ,"name":"Dorogobouge"},
-     {"lon": 34.3 ,"lat":55.2 ,"name":"Wixma"},
+     {"lon": 34.3 ,"lat":55.2 ,"name":"Wixma",dir:-1},
      {"lon": 34.4 ,"lat":55.5 ,"name":"Chjat"},
      {"lon": 36.0 ,"lat":55.5 ,"name":"Mojaisk"},
      {"lon": 37.6 ,"lat":55.8 ,"name":"Moscou"},
-     {"lon": 36.6 ,"lat":55.3 ,"name":"Tarantino"},
-     {"lon": 36.5 ,"lat":55.0 ,"name":"Malo-jarosewli"}
+     {"lon": 36.6 ,"lat":55.3 ,"name":"Tarantino",dir:-1},
+     {"lon": 36.5 ,"lat":55.0 ,"name":"Malo-jarosewli",dir:-1}
     ]
 
 napoleon.temp = [
@@ -125,15 +127,33 @@ napoleon.army = [
     {lon:24.1,  lat:54.4,  size:6000,   dir:-1, group:3}
 ];
 </script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-4871207-9', 'benschmidt.org');
+  ga('send', 'pageview');
+
+</script>
 
 
-    <h1>The Minard map in D3: a trail layout demonstration</h1>
-    <div>This is a demo of how my <a href="http://github.com/bmschmidt/D3trail">D3 trail layout</a> can reproduce
+    <h1>Minard's Map of the Russian Campaign</h1>
+    <h2>A trail layout demonstration</h2>
+    <div>This is a demo of how my <a href="http://github.com/bmschmidt/D3-trail">D3 trail layout</a> for <a href="http://d3js.org">D3</a> can reproduce
     <a href=http://en.wikipedia.org/wiki/Charles_Joseph_Minard>Minard's map of the retreat of Napoleon's army from Russia</a>.
     <p>
-    The "grouping" elements are being used here to draw several different paths (by color) simultaneously, and alter their width by the size of Napoleon's army. (From a maximum of 340,000 to an end value of 4,000.) Cities are overlaid on that.
+    The "grouping" elements are being used here to draw several
+    different paths (by color) simultaneously, and set their width by
+    the size of Napoleon's army. (From a maximum of 340,000 to an end
+    value of 4,000: no scale displayed for concision.) Data is taken
+    from <a href=http://mbostock.github.io/protovis/ex/napoleon.html>here</a>.
 
-    <p>All the animation and timing is being done by D3's internal transitions. That also means that unlike Minard, we need not use color to show direction: here the different branches of the army each have their own color.
+    <p>This is a reimplementation, not a reimagination,
+    of Minard's diagram. The only significant addition is the element
+    of movement, which helps clarify the most confusing elements of
+    the original (such as the direction of the temperature graph). All animation timing is done by purely by D3 transitions. Animation means that unlike Minard, we need not use color to show direction: here the different branches of the army each have their own color.
 
 </div>
 
@@ -239,11 +259,11 @@ temps
     .append("text")
     .style("font-size",100)
     .style("opacity",0)
-    .attr("transform","translate(135,100)")
+    .attr("transform","translate(165,100)")
     .transition()
     .delay(time)
     .duration(1500)
-    .text("Temperature (f)")
+    .text("Temperature (C)")
     .style("opacity",.15)
 
 
@@ -252,13 +272,16 @@ temps
 tmpLayout = d3.layout.trail()
     .positioner(function(d) {return [proj([d.lon,55])[0],tempScale(d.temp)]})
 
+napoleon.temp = napoleon.temp.map(function(d) {
+d.dir = -1; d.temp = d.temp*1.25;
+return d})
 tmpData = tmpLayout
     .grouping(function() {return 1})
     .data(napoleon.temp)
     .coordType("xy")
     .layout()
 
-tmpData = tmpData.map(function(d) {d.dir = -1; return d})
+
 
 tlines = temps.selectAll("line.temperature").data(tmpData)
 
@@ -292,5 +315,5 @@ tlines
 
     <hr>
     <address></address>
-    <!-- hhmts start -->Last modified: Wed Jun 18 17:20:28 EDT 2014 <!-- hhmts end -->
+    <!-- hhmts start -->Last modified: Thu Jun 19 08:28:00 EDT 2014 <!-- hhmts end -->
     </body> </html>
