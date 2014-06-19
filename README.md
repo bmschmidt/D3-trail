@@ -1,14 +1,15 @@
 D3 Trail layout
 ================
 
-This is a layout function for creating paths in D3 where (unlike the native d3.svg.line() element) you need to apply specific geometries to each element of the line.
+This is a layout function for creating paths in D3 where (unlike the native d3.svg.line() element) you need to apply specific aesthetics to each element of the line.
 
 Demos
 ======
 
-The original use case was trails with decaying opacity to represent movement: [here's a sample image](http://benschmidt.org/maury2.png) (interactive versions forthcoming).
+The original use case was trails with decaying opacity to represent movement: here's a sample image:![](http://benschmidt.org/maury2.png) (interactive versions forthcoming).
 
-For a classical example, see how variable-width, staggered entry lines [make it possible to reproduce Minard's famous Napoleon map](http://benschmidt.org/D3-trail/minard.html).
+For a classical example, see how variable-width, staggered entry lines [make it possible to reproduce Minard's famous Napoleon map in motion](http://benschmidt.org/D3-trail/minard.html). Here's a screenshot, although the whole point is the animation. ![](http://benschmidt.org/minard.png)
+
 
 For a more straightforward demo of staggered entry ([see this demo of a random walk](http://benschmidt.org/D3-trail/pathdemo.html)).
 
