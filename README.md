@@ -1,12 +1,19 @@
 D3 Trail layout
 ================
 
-
 This is a layout function for creating paths in D3 where (unlike the native d3.svg.line() element) you need to apply specific geometries to each element of the line.
+
+Demos
+======
 
 The original use case was trails with decaying opacity to represent movement: [here's a sample image](http://benschmidt.org/maury2.png) (interactive versions forthcoming).
 
-This makes it possible to do things like staggered entry ([for instance, in a random walk](http://benschmidt.org/D3trail/pathdemo.html)); or lines of variable width ([for instance, in this reproduction of the line part of Minard's famous Napoleon map](http://benschmidt.org/minard.html).
+For a classical example, see how variable-width, staggered entry lines [make it possible to reproduce Minard's famous Napoleon map](http://benschmidt.org/D3-trail/minard.html).
+
+For a more straightforward demo of staggered entry ([see this demo of a random walk](http://benschmidt.org/D3-trail/pathdemo.html)).
+
+Usage
+=====
 
 You instantiate it by calling the function: once parameters are set, run the `layout()` method to get values back.
 
@@ -73,6 +80,7 @@ trail.coordType()
 -----------------
 
 Set (or with no arguments, return) the format of positions for the return values. Can be either
+
 1. `"xy"`, in which case you'll get `x1`,`x2`,`y1`, and `y2` elements suitable for use with svg lines, or
 2. `"coordinates"`, in which case the objection will get a `coordinates` element consisting of an array of points so you can simply create a d3.geo.path() element. (Useful if you want to preserve great circle arcs for your paths, for instance; in this case the positioner should return lat and lon, not the projected values, so you don't project them twice.)
 
