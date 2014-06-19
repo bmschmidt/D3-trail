@@ -4,6 +4,15 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     </head>
     <style>
+
+h1 {
+font-family:sans-serif
+}
+
+h2 {
+font-family:sans-serif
+}
+
     .axis path,
     .axis line {
         fill: none;
@@ -20,6 +29,21 @@
         font-family: sans-serif;
         font-size: 13px;
     }
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+      stroke-width: 0;
+}
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+      stroke-width: 0;
+}
 body
 {
 background: #FFFFFA; 
@@ -151,15 +175,23 @@ napoleon.army = [
     from <a href=http://mbostock.github.io/protovis/ex/napoleon.html>here</a>.
 
     <p>This is a reimplementation, not a reimagination,
-    of Minard's diagram. The only significant addition is the element
-    of movement, which helps clarify the most confusing elements of
-    the original (such as the direction of the temperature graph). All animation timing is done by purely by D3 transitions. Animation means that unlike Minard, we need not use color to show direction: here the different branches of the army each have their own color.
+    of Minard's diagram. The only significant addition is the temporal
+    placement of elements. This helps clarify the most confusing elements of
+    the original (such as the direction of the temperature graph). All
+    animation timing is done by purely by D3 transitions. This frees
+    up color from representing the army's direction:
+    here the different branches of the French force each have their own
+    color. Even these minor improvements can only mean, though, that
+    this has now displaced Minard's original as <em>greatest statistical graphic ever
+    created.</em> (Unless you really miss the original rivers, I guess.)
 
 </div>
 
 
     <script>
     var  width=1200,height=600;
+reload = function() {
+d3.selectAll("svg").remove()
 
 d3.select("body").append("svg").attr('width',width).attr('height',height).attr('id','minard')
 
@@ -232,7 +264,12 @@ cities = cities.enter().append("g")
     .attr("transform",function(d) { return "translate(" + d.x + "," + d.y + ")" })
 
 
+
+
 circles = cities.append("circle").attr('r',3).style("fill","black").style("opacity",0).transition().delay(function(d) {return timeScale(d,'x')}).duration(1000).style("opacity",1)
+
+// start drawing 150 milliseconds before the map gets there: this seems
+// to produce the nicest effect.
 
 labels = cities.append("text").text(function(d) {return d.name})
     .style("fill","black").attr("transform","translate(5,5)").style("opacity",0).transition()
@@ -242,14 +279,16 @@ labels = cities.append("text").text(function(d) {return d.name})
 
 temps = d3.select("#minard").append("g").attr("transform","translate(0,300)")
 
+tempScale = d3.scale.linear().domain([1,-41]).range([0,200]) 
 
-tempScale = d3.scale.linear().domain([1,-36]).range([0,200])
+yaxis = d3.svg.axis().orient("right").scale(tempScale) 
 
 
-yaxis = d3.svg.axis().orient("right").scale(tempScale)
+grid = temps.append("g") 
+.attr("transform","translate(" + proj([37.6,55])[0] + "0)")
 
 temps.append("g")
-    .attr("transform","translate(" + proj([38,55])[0] + "0)").attr("class","y axis").style("opacity",0)
+    .attr("transform","translate(" + proj([37.6,55])[0] + "0)").attr("class","y axis").style("opacity",0)
     .call(yaxis)
     .transition()
     .delay(time)
@@ -259,15 +298,12 @@ temps
     .append("text")
     .style("font-size",100)
     .style("opacity",0)
-    .attr("transform","translate(165,100)")
+    .attr("transform","translate(265,100)")
     .transition()
     .delay(time)
     .duration(1500)
     .text("Temperature (C)")
     .style("opacity",.15)
-
-
-
 
 tmpLayout = d3.layout.trail()
     .positioner(function(d) {return [proj([d.lon,55])[0],tempScale(d.temp)]})
@@ -280,8 +316,6 @@ tmpData = tmpLayout
     .data(napoleon.temp)
     .coordType("xy")
     .layout()
-
-
 
 tlines = temps.selectAll("line.temperature").data(tmpData)
 
@@ -306,14 +340,30 @@ tlines
 
 
 
+grid
+.attr("class", "grid") 
+.call(yaxis.orient("right") 
+            .tickSize(proj([25.3,55])[0] - proj([38,55])[0], 0, 0) 
+.tickFormat("") 
+        )
+.style("opacity",0)
+.transition() 
+.delay(time*2)
+//.duration(Math.abs(negTime(proj([25.3,55])[0])-negTime(proj([38,55])[0])))
+.duration(5000)
+.ease("linear") 
+        .call(yaxis.orient("right") 
+            .tickSize(proj([25.3,55])[0] - proj([38,55])[0], 0, 0) 
+            .tickFormat("") 
+        )
+.style("opacity",1)
+}
 
-
-
-
+reload()
 
 </script>
 
     <hr>
     <address></address>
-    <!-- hhmts start -->Last modified: Thu Jun 19 08:28:00 EDT 2014 <!-- hhmts end -->
+    <!-- hhmts start -->Last modified: Thu Jun 19 10:52:24 EDT 2014 <!-- hhmts end -->
     </body> </html>
