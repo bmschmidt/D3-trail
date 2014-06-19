@@ -82,6 +82,7 @@ trail.coordType()
 -----------------
 
 Set (or with no arguments, return) the format of positions for the return values. Can be either
+
 1. `"xy"`, in which case you'll get `x1`,`x2`,`y1`, and `y2` elements suitable for use with svg lines, or
 2. `"coordinates"`, in which case the objection will get a `coordinates` element consisting of an array of points so you can simply create a d3.geo.path() element. (Useful if you want to preserve great circle arcs for your paths, for instance; in this case the positioner should return lat and lon, not the projected values, so you don't project them twice.)
 
