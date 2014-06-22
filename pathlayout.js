@@ -57,6 +57,11 @@ d3.layout.trail = function() {
 
             for (var i = 0; i < (values.length); i++) {
                 var current = values[i];
+                if (values[i+1] != undefined) {
+		    current.next = values[i+1]
+		} else {
+		    current.next = {}
+		}
                 if (values[i-1] != undefined) {
                     current.previous = values[i-1]
                     if (coordType=="coordinates") {
